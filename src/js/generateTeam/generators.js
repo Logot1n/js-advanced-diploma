@@ -1,3 +1,12 @@
+import Team from './Team';
+import PositionedCharacter from './PositionedCharacter';
+import Bowman from './characters/Bowman';
+import Swordsman from './characters/Swordsman';
+import Magician from './characters/Magician';
+import Daemon from './characters/Daemon';
+import Undead from './characters/Undead';
+import Vampire from './characters/Vampire';
+
 /**
  * Формирует экземпляр персонажа из массива allowedTypes со
  * случайным уровнем от 1 до maxLevel
@@ -9,9 +18,11 @@
  *
  */
 export function* characterGenerator(playerTypes, maxLevel) {
-  for (const type of playerTypes) {
+  while (true) {
+    const randomIndex = Math.floor(Math.random() * playerTypes.length);
+    const randomType = playerTypes[randomIndex];
     const level = Math.ceil(Math.random() * maxLevel);
-    yield new type(level);
+    yield new randomType(level);
   }
 }
 
@@ -23,5 +34,67 @@ export function* characterGenerator(playerTypes, maxLevel) {
  * @returns экземпляр Team, хранящий экземпляры персонажей. Количество персонажей в команде - characterCount
  * */
 export function generateTeam(playerTypes, maxLevel, characterCount) {
-  return new Team(characterGenerator(playerTypes, maxLevel), characterCount);
+  const characters = [];
+  const generator = characterGenerator(playerTypes, maxLevel);
+
+  for (let i = 0; i < characterCount; i++) {
+    const character = generator.next().value;
+    characters.push(character);
+  }
+
+  return new Team(characters);
 }
+
+export const generatePlayerPositionedCharacters = () => { // Новая функция генерации позиции команды игрока
+  const playerTypes = [
+    Bowman,
+    Swordsman,
+    Magician,
+  ];
+
+  const playerTeam = generateTeam(playerTypes, 4, 4);
+
+  const playerCharacters = playerTeam.characters;
+
+  const playerPositions = [];
+
+  while (playerCharacters.length !== playerPositions.length) {
+    const position = 8 * Math.floor(Math.random() * 8) + Math.round(Math.random());
+
+    if (playerPositions.includes(position)) {
+      continue;
+    }
+    playerPositions.push(position);
+  }
+
+  const playerPositionedCharacters = playerCharacters.map((character, i) => new PositionedCharacter(character, playerPositions[i]));
+
+  return playerPositionedCharacters;
+};
+
+export const generateEnemyPositionedCharacters = () => { // Новая функция генерации позиции команды противника
+  const enemysTypes = [
+    Daemon,
+    Undead,
+    Vampire,
+  ];
+
+  const enemyTeam = generateTeam(enemysTypes, 4, 4);
+
+  const enemyCharacters = enemyTeam.characters;
+
+  const enemyPositions = [];
+
+  while (enemyCharacters.length !== enemyPositions.length) {
+    const position = 8 * Math.floor(Math.random() * 8) + Math.round(Math.random()) + 6;
+
+    if (enemyPositions.includes(position)) {
+      continue;
+    }
+    enemyPositions.push(position);
+  }
+
+  const enemiesPositionedCharacters = enemyCharacters.map((character, i) => new PositionedCharacter(character, enemyPositions[i]));
+
+  return enemiesPositionedCharacters;
+};

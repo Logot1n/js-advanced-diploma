@@ -1,6 +1,6 @@
-import { calcHealthLevel, calcTileType } from './utils';
+import { calcHealthLevel, calcTileType } from './Board/utils';
 
-export default class GamePlay {
+export default class GamePlay { // Класс отвечает за создание игровых действий
   constructor() {
     this.boardSize = 8;
     this.container = null;
@@ -14,7 +14,7 @@ export default class GamePlay {
     this.loadGameListeners = [];
   }
 
-  bindToDOM(container) {
+  bindToDOM(container) { // Создание DOM элементов
     if (!(container instanceof HTMLElement)) {
       throw new Error('container is not HTMLElement');
     }
@@ -26,7 +26,7 @@ export default class GamePlay {
    *
    * @param theme
    */
-  drawUi(theme) {
+  drawUi(theme) { // Создание основной HTML-страницы с выбранной темой
     this.checkBinding();
 
     this.container.innerHTML = `
@@ -68,7 +68,7 @@ export default class GamePlay {
    *
    * @param positions array of PositionedCharacter objects
    */
-  redrawPositions(positions) {
+  redrawPositions(positions) { // Отрисовка позиций персонажей на поле
     for (const cell of this.cells) {
       cell.innerHTML = '';
     }
@@ -96,7 +96,7 @@ export default class GamePlay {
    *
    * @param callback
    */
-  addCellEnterListener(callback) {
+  addCellEnterListener(callback) { // Вход указателя мыши в ячейку поля
     this.cellEnterListeners.push(callback);
   }
 
@@ -105,7 +105,7 @@ export default class GamePlay {
    *
    * @param callback
    */
-  addCellLeaveListener(callback) {
+  addCellLeaveListener(callback) { // Выход указателя мыши из ячейки поля
     this.cellLeaveListeners.push(callback);
   }
 
@@ -114,7 +114,7 @@ export default class GamePlay {
    *
    * @param callback
    */
-  addCellClickListener(callback) {
+  addCellClickListener(callback) { // Клик мышью по ячейке поля
     this.cellClickListeners.push(callback);
   }
 

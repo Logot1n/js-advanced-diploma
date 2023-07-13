@@ -1,4 +1,11 @@
 import { calcTileType } from '../js/Board/utils';
+import Character from '../js/generateTeam/Character';
+import Bowman from '../js/generateTeam/characters/Bowman';
+import Daemon from '../js/generateTeam/characters/Daemon';
+import Magician from '../js/generateTeam/characters/Magician';
+import Swordsman from '../js/generateTeam/characters/Swordsman';
+import Undead from '../js/generateTeam/characters/Undead';
+import Vampire from '../js/generateTeam/characters/Vampire';
 
 describe('calcTileType', () => {
   test.each([
@@ -13,5 +20,49 @@ describe('calcTileType', () => {
     [27, 8, 'center'],
   ])('%s index ячейки и размер поля %s должны вернуть значение %s типа ячейки', (index, boardSize, expected) => {
     expect(calcTileType(index, boardSize)).toBe(expected);
+  });
+});
+
+describe('Character и его дочерние классы', () => {
+  test('Исключение при создании экземпляра класса Character', () => {
+    expect(() => new Character(3, 'generic')).toThrow(Error('Нельзя создать новый экземпляр класса Character'));
+  });
+
+  const bowman = new Bowman(3);
+  const swordsman = new Swordsman(3);
+  const magician = new Magician(3);
+  const daemon = new Daemon(3);
+  const undead = new Undead(3);
+  const vampire = new Vampire(3);
+
+  test('Создание экземпляра класса Bowman', () => {
+    expect(bowman).toEqual({
+      level: 3, attack: 25, defence: 25, health: 100, type: 'bowman',
+    });
+  });
+  test('Создание экземпляра класса Daemon', () => {
+    expect(daemon).toEqual({
+      level: 3, attack: 10, defence: 10, health: 100, type: 'daemon',
+    });
+  });
+  test('Создание экземпляра класса Magician', () => {
+    expect(magician).toEqual({
+      level: 3, attack: 10, defence: 40, health: 100, type: 'magician',
+    });
+  });
+  test('Создание экземпляра класса Swordsman', () => {
+    expect(swordsman).toEqual({
+      level: 3, attack: 40, defence: 10, health: 100, type: 'swordsman',
+    });
+  });
+  test('Создание экземпляра класса Undead', () => {
+    expect(undead).toEqual({
+      level: 3, attack: 40, defence: 10, health: 100, type: 'undead',
+    });
+  });
+  test('Создание экземпляра класса Vampire', () => {
+    expect(vampire).toEqual({
+      level: 3, attack: 25, defence: 25, health: 100, type: 'vampire',
+    });
   });
 });

@@ -12,7 +12,5 @@ export default class PositionedCharacter {
     if (typeof position !== 'number') {
       throw new Error('position must be a number');
     }
-
-    // Надо прописать генерацию позиций
   }
 }
