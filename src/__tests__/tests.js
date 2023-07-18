@@ -6,6 +6,11 @@ import Magician from '../js/generateTeam/characters/Magician';
 import Swordsman from '../js/generateTeam/characters/Swordsman';
 import Undead from '../js/generateTeam/characters/Undead';
 import Vampire from '../js/generateTeam/characters/Vampire';
+// import PositionedCharacter from '../js/generateTeam/PositionedCharacter';
+// import GamePlay from '../js/GamePlay';
+// import GameController from '../js/GameController';
+// import GameStateService from '../js/GameStateService';
+// import themes from '../js/Board/themes';
 
 describe('calcTileType', () => {
   test.each([
@@ -66,3 +71,13 @@ describe('Character и его дочерние классы', () => {
     });
   });
 });
+
+// describe('Tooltip', () => { // Тесты не сделаны
+//   test('Информация персонажа показывается при наведение', () => {
+
+//   })
+
+//   test('Информация скрывается при убирание курсора с ячейки персонажа', () => {
+
+//   })
+// })
