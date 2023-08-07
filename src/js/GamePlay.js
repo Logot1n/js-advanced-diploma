@@ -14,7 +14,7 @@ export default class GamePlay { // Класс отвечает за создан
     this.loadGameListeners = [];
   }
 
-  bindToDOM(container) { // Создание DOM элементов
+  bindToDOM(container) {
     if (!(container instanceof HTMLElement)) {
       throw new Error('container is not HTMLElement');
     }
@@ -226,6 +226,60 @@ export default class GamePlay { // Класс отвечает за создан
   checkBinding() {
     if (this.container === null) {
       throw new Error('GamePlay not bind to DOM');
+    }
+  }
+
+  getCharacterInfo(level, attack, defence, health) { // возвращаем информацию о персонаже
+    const medal = String.fromCodePoint(0x1F396);
+    const swords = String.fromCodePoint(0x2694);
+    const shield = String.fromCodePoint(0x1F6E1);
+    const heart = String.fromCodePoint(0x2764);
+
+    return `${medal} ${level} ${swords} ${attack} ${shield} ${defence} ${heart} ${health}`;
+  }
+
+  getVector(currentCell, activeCell, boardSize) { // получаем вектор перемещения персонажа
+    let result;
+    const diff = Math.abs(currentCell - activeCell);
+    const mod = currentCell % boardSize;
+
+    const diagDiffKoef = Math.abs(Math.floor(currentCell / boardSize) - Math.floor(activeCell / boardSize));
+
+    // вертикаль
+    if (mod - (activeCell % boardSize) === 0) {
+      result = diff / boardSize;
+    }
+
+    // горизонталь
+    if (Math.floor(currentCell / boardSize) === Math.floor(activeCell / boardSize)) {
+      result = diff;
+    }
+
+    // левая диагональ
+    if (diff === (boardSize - 1) * diagDiffKoef) {
+      result = diff / (boardSize - 1);
+    }
+
+    // правая диагональ
+    if (diff === (boardSize + 1) * diagDiffKoef) {
+      result = diff / (boardSize + 1);
+    }
+
+    return result;
+  }
+
+  getIndexSelectedCell() { // Получаем индекс выбранного персонажа или возвращаем null
+    const selectCell = this.cells.find((cellEl) => cellEl.classList.contains('selected-yellow'));
+    if (selectCell) {
+      return this.cells.indexOf(selectCell);
+    }
+    return null;
+  }
+
+  switchActivePlayer() {
+    this.activePlayer = 1 - this.activePlayer; // Переключаем между 0 и 1
+    if (this.activePlayer === 1) {
+      this.computerTurn();
     }
   }
 }

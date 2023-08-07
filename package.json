@@ -41,6 +41,8 @@
   },
   "homepage": "https://github.com/Logot1n/js-advanced-diploma#readme",
   "dependencies": {
-    "webpack-merge": "^5.9.0"
+    "webpack-merge": "^5.9.0",
+    "mini-css-extract-plugin": "^2.7.6",
+    "html-webpack-plugin": "^5.5.3"
   }
 }

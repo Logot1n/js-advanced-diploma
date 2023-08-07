@@ -5,5 +5,7 @@ export default class Swordsman extends Character {
     super(level, 'swordsman'); // Вызываем конструктор базового класса
     this.attack = 40;
     this.defence = 10;
+    this.moveDistance = 4;
+    this.attackDistance = 1;
   }
 }

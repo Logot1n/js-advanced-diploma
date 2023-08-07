@@ -5,5 +5,7 @@ export default class Daemon extends Character {
     super(level, 'daemon'); // Вызываем конструктор базового класса
     this.attack = 10;
     this.defence = 10;
+    this.moveDistance = 1;
+    this.attackDistance = 4;
   }
 }
