@@ -41,7 +41,6 @@ export function generateTeam(playerTypes, maxLevel, characterCount) {
     const character = generator.next().value;
     characters.push(character);
   }
-
   return new Team(characters);
 }
 
@@ -52,7 +51,7 @@ export const generatePlayerPositionedCharacters = () => { // Новая функ
     Magician,
   ];
 
-  const playerTeam = generateTeam(playerTypes, 4, 4);
+  const playerTeam = generateTeam(playerTypes, 1, 1);
 
   const playerCharacters = playerTeam.characters;
 
@@ -72,14 +71,34 @@ export const generatePlayerPositionedCharacters = () => { // Новая функ
   return playerPositionedCharacters;
 };
 
+export const generatePlayerNewPositionedCharacters = (playerPositionedCharacters) => { // Генерация новых позиций персонажей игрока в случае смены уровня
+  const playerPositions = [];
+
+  while (playerPositions.length !== 4) {
+    const position = 8 * Math.floor(Math.random() * 8) + Math.round(Math.random());
+
+    if (playerPositions.includes(position)) {
+      continue;
+    }
+    playerPositions.push(position);
+  }
+
+  playerPositionedCharacters.forEach(char => {
+    let randomIndex = Math.floor(Math.random() * playerPositions.length);
+    let newPosition = playerPositions[randomIndex];
+    char.position = newPosition;
+    playerPositions.splice(randomIndex, 1);
+  })
+}
+
 export const generateEnemyPositionedCharacters = () => { // Новая функция генерации позиции команды противника
   const enemysTypes = [
     Daemon,
     Undead,
     Vampire,
-  ];
+  ];  
 
-  const enemyTeam = generateTeam(enemysTypes, 4, 4);
+  const enemyTeam = generateTeam(enemysTypes, 1, 1);
 
   const enemyCharacters = enemyTeam.characters;
 

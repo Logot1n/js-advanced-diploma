@@ -282,4 +282,46 @@ export default class GamePlay { // Класс отвечает за создан
       this.computerTurn();
     }
   }
+
+  reloadStats(playerPositionedCharacters) {
+    playerPositionedCharacters.forEach(char => {
+      char.character.level++;
+
+      let healthAfter = char.character.health + 30;
+      char.character.health = healthAfter;
+      if(healthAfter > 100) {
+        char.character.health = 100;
+      }
+
+      let defenceAfter = Math.max(char.character.defence, char.character.defence * (80 + char.character.health) / 100);
+      char.character.defence = Math.ceil(defenceAfter);
+
+      let attackAfter = Math.max(char.character.attack, char.character.attack * (80 + char.character.health) / 100);
+      char.character.attack = Math.ceil(attackAfter);
+    })
+  }
+
+  computerReloadStats(enemiesPositionedCharacters, currentTheme, themes) {
+    enemiesPositionedCharacters.forEach(char => {
+      if(currentTheme === themes.desert) {
+        char.character.level = 2;
+      } else if(currentTheme === themes.arctic) {
+        char.character.level = 3;
+      } else if(currentTheme === themes.mountain) {
+        char.character.level = 4;
+      }
+
+      let healthAfter = char.character.health + 30;
+      char.character.health = healthAfter;
+      if(healthAfter > 100) {
+        char.character.health = 100;
+      }
+
+      let defenceAfter = Math.max(char.character.defence, char.character.defence * (80 + char.character.health) / 100);
+      char.character.defence = Math.ceil(defenceAfter);
+
+      let attackAfter = Math.max(char.character.attack, char.character.attack * (80 + char.character.health) / 100);
+      char.character.attack = Math.ceil(attackAfter);
+    })
+  }
 }

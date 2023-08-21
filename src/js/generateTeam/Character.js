@@ -14,13 +14,13 @@
  */
 export default class Character {
   constructor(level, type = 'generic') {
-    if (new.target === Character) { // Создаем ошибку при создание класса Character. Можно создавать только классы наследуемые от Character.
-      throw new Error('Нельзя создать новый экземпляр класса Character');
-    }
+    // if (new.target === Character) { // Создаем ошибку при создание класса Character. Можно создавать только классы наследуемые от Character.
+    //   throw new Error('Нельзя создать новый экземпляр класса Character');
+    // }
     this.level = level;
     this.attack = 0;
     this.defence = 0;
-    this.health = 50;
+    this.health = 1;
     this.type = type;
   }
 }
