@@ -51,7 +51,7 @@ export const generatePlayerPositionedCharacters = () => { // Новая функ
     Magician,
   ];
 
-  const playerTeam = generateTeam(playerTypes, 1, 1);
+  const playerTeam = generateTeam(playerTypes, 1, 4);
 
   const playerCharacters = playerTeam.characters;
 
@@ -98,7 +98,7 @@ export const generateEnemyPositionedCharacters = () => { // Новая функ�
     Vampire,
   ];  
 
-  const enemyTeam = generateTeam(enemysTypes, 1, 1);
+  const enemyTeam = generateTeam(enemysTypes, 1, 4);
 
   const enemyCharacters = enemyTeam.characters;
 

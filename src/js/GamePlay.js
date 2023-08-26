@@ -267,6 +267,59 @@ export default class GamePlay { // Класс отвечает за создан
 
     return result;
   }
+  
+  getRandomMove(currentPosition, boardSize, moveDistance) {
+    const randomDirection = Math.floor(Math.random() * 8);
+    const randomMove = Math.floor(Math.random() * moveDistance) + 1;
+  
+    let newPosition;
+  
+    switch (randomDirection) {
+      case 0: newPosition = currentPosition - randomMove; break; // Влево
+      case 1: newPosition = currentPosition + randomMove; break; // Вправо
+      case 2: newPosition = currentPosition - boardSize * randomMove; break; // Вверх
+      case 3: newPosition = currentPosition + boardSize * randomMove; break; // Вниз
+      case 4: newPosition = currentPosition - boardSize * randomMove - randomMove; break; // Влево и вверх
+      case 5: newPosition = currentPosition - boardSize * randomMove + randomMove; break; // Вправо и вверх
+      case 6: newPosition = currentPosition + boardSize * randomMove - randomMove; break; // Влево и вниз
+      default: newPosition = currentPosition + boardSize * randomMove + randomMove; break; // Вправо и вниз
+    }
+  
+    return newPosition;
+  }
+
+  computerMoving(computerX, computerY, playerX, playerY, computerCharPosition, move) {
+    let newPosition;
+    if(computerY === playerY) { // движение по горизонтали
+      if(computerX > playerX) {
+        newPosition = computerCharPosition - move;
+      } else {
+        newPosition = computerCharPosition + move;
+      }
+      console.log('на одном Y')
+    } else if(computerX === playerX) {
+      if(computerY > playerY) {
+        newPosition = computerCharPosition - this.boardSize * move;
+      } else {
+        newPosition = computerCharPosition + this.boardSize * move;
+      }
+      console.log('на одном X')
+    } else if(computerX > playerX && computerY > playerY) {
+      console.log('1');
+      newPosition = computerCharPosition - this.boardSize * move - move;
+    } else if(computerX < playerX && computerY < playerY) {
+      newPosition = computerCharPosition + this.boardSize * move + move;
+      console.log('2');
+    } else if(computerX < playerX && computerY > playerY) {
+      newPosition = computerCharPosition + this.boardSize * move - move;
+      console.log('3');
+    } else if(computerX > playerX && computerY < playerY) {
+      newPosition = computerCharPosition - this.boardSize * move + move;
+      console.log('4');
+    }
+
+    return newPosition;
+  }
 
   getIndexSelectedCell() { // Получаем индекс выбранного персонажа или возвращаем null
     const selectCell = this.cells.find((cellEl) => cellEl.classList.contains('selected-yellow'));

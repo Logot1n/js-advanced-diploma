@@ -224,36 +224,164 @@ export default class GameController { // основной контролирую
     }
   }
 
-  computerTurn() { // Противник умеет пока что только бить в пределах дистанции атаки
+  // computerTurn() { // Тут таргетом является случайная цель, а не ближайшая
+  //   setTimeout(() => {
+  //     if (this.enemiesPositionedCharacters.length === 0) {
+  //       this.computerMoveDone = true; // Завершил ход компьютера
+  //       this.loseOrNextLevel();
+  //       this.switchActivePlayer();
+  //       return; // Выход из функции, так как нет персонажей компьютера
+  //     }
+
+  //     const randomTarget = Math.floor(Math.random() * this.playerPositionedCharacters.length) // Выбираем случайного персонажа игрока
+  //     const targetPosition = this.playerPositionedCharacters[randomTarget].position // Получаем позицию случайного персонажа игрока
+  //     const selectedCell = this.gamePlay.getIndexSelectedCell();
+
+  //     for (let i = 0; i < this.enemiesPositionedCharacters.length; i++) {
+  //       const computer = this.enemiesPositionedCharacters[i];
+  //       const attackDistance = computer.character.attackDistance;
+  //       const moveDistance = computer.character.moveDistance;
+  //       const computerCharPosition = computer.position;
+  //       const computerX = computerCharPosition % this.gamePlay.boardSize;
+  //       const computerY = Math.floor(computerCharPosition / this.gamePlay.boardSize);
+  //       const playerX = targetPosition % this.gamePlay.boardSize;
+  //       const playerY = Math.floor(targetPosition / this.gamePlay.boardSize);
+  //       let newPosition;
+
+  //       let distanceToPlayer = this.gamePlay.getVector(targetPosition, computerCharPosition, this.gamePlay.boardSize);
+
+  //       if (attackDistance >= distanceToPlayer) { // Реализация атаки
+  //         console.log('компьютер атакует');
+  //         const damage = Math.floor(Math.max(computer.character.attack - this.playerPositionedCharacters[randomTarget].character.defence, computer.character.attack * 0.1));
+  //         this.gamePlay.showDamage(targetPosition, damage).then(() => {
+  //           this.playerPositionedCharacters[randomTarget].character.health -= damage;
+  //           this.gamePlay.redrawPositions(this.concatedCharacters);
+  //           if (this.playerPositionedCharacters[randomTarget].character.health <= 0) {
+  //             this.playerPositionedCharacters.splice(randomTarget, 1); // По индексу удаляем из списка персонажей
+  //             const characterIndex = this.concatedCharacters.findIndex((char) => char.position === targetPosition); // Получаем индекс персонажа игрока в списке персонажей
+  //             this.concatedCharacters.splice(characterIndex, 1); // По индексу удаляем из списка персонажей
+  //             this.gamePlay.redrawPositions(this.concatedCharacters); // Перерисовываем поле без убитого персонажа игрока
+  //             if (selectedCell === targetPosition) { // если он был активен, снимаем выделение
+  //               this.gamePlay.deselectCell(selectedCell);
+  //             }
+  //           }
+  //         });
+  //         break; // Выходим из цикла после атаки
+  //       } else if (moveDistance < distanceToPlayer && attackDistance < distanceToPlayer) { // Реализация движения, если вектор < дистанции до цели и атака < дистанции до цели
+  //         if(computerY === playerY) { // движение по горизонтали
+  //           if(computerX > playerX) {
+  //             newPosition = computerCharPosition - moveDistance;
+  //           } else {
+  //             newPosition = computerCharPosition + moveDistance;
+  //           }
+  //         } else if(computerX === playerX) {
+  //           if(computerY > playerY) {
+  //             newPosition = computerCharPosition - this.gamePlay.boardSize * moveDistance;
+  //           } else {
+  //             newPosition = computerCharPosition + this.gamePlay.boardSize * moveDistance;
+  //           }
+  //         } else if(computerX > playerX && computerY > playerY) {
+  //           newPosition = computerCharPosition - this.gamePlay.boardSize * moveDistance - moveDistance;
+  //         } else if(computerX < playerX && computerY < playerY) {
+  //           newPosition = computerCharPosition + this.gamePlay.boardSize * moveDistance + moveDistance;
+  //         } else if(computerX < playerX && computerY > playerY) {
+  //           newPosition = computerCharPosition + this.gamePlay.boardSize * moveDistance - moveDistance;
+  //         } else if(computerX > playerX && computerY < playerY) {
+  //           newPosition = computerCharPosition - this.gamePlay.boardSize * moveDistance + moveDistance;
+  //         }
+          
+  //         // Проверяем, что новая позиция находится в пределах игрового поля
+  //         if (
+  //           newPosition >= 0 &&
+  //           newPosition < this.gamePlay.boardSize ** 2 &&
+  //           !this.concatedCharacters.some(char => char.position === newPosition)
+  //         ) {
+  //           // Перемещаем персонажа компьютера
+  //           computer.position = newPosition;
+  //           this.gamePlay.redrawPositions(this.concatedCharacters);
+  //         }
+  //         break;
+  //       } else if(distanceToPlayer > attackDistance && distanceToPlayer < moveDistance) {
+
+  //       } else if(distanceToPlayer === undefined) {
+  //         newPosition = getRandomMove(computerCharPosition, this.gamePlay.boardSize, moveDistance);
+
+  //         // Проверяем, что новая позиция находится в пределах игрового поля
+  //         if (
+  //           newPosition >= 0 &&
+  //           newPosition < this.gamePlay.boardSize ** 2 &&
+  //           !this.concatedCharacters.some(char => char.position === newPosition)
+  //         ) {
+  //           // Перемещаем персонажа компьютера
+  //           computer.position = newPosition;
+  //           this.gamePlay.redrawPositions(this.concatedCharacters);
+  //         } else {
+  //           newPosition = getRandomMove(computerCharPosition, this.gamePlay.boardSize, moveDistance);
+  //         }
+  //         break;
+  //       }
+
+  //     this.computerMoveDone = true; // Завершил ход компьютера
+  //     if(this.playerPositionedCharacters.length === 0) {
+  //       this.loseOrNextLevel();
+  //     } else {
+  //       this.switchActivePlayer(); // После хода компьютера переключаем ход на игрока
+  //     }
+
+  //     }
+  //   }, 2000); // Задержка перед ходом компьютера
+  // }
+
+  computerTurn() { // Актуальный код для хода компьютера
     setTimeout(() => {
       if (this.enemiesPositionedCharacters.length === 0) {
-        this.computerMoveDone = true; // Завершил ход компьютера
+        this.computerMoveDone = true;
         this.loseOrNextLevel();
         this.switchActivePlayer();
-        return; // Выход из функции, так как нет персонажей компьютера
+        return;
       }
-
-      const randomTarget = Math.floor(Math.random() * this.playerPositionedCharacters.length) // Выбираем случайного персонажа игрока
-      const targetPosition = this.playerPositionedCharacters[randomTarget].position // Получаем позицию случайного персонажа игрока
+  
       const selectedCell = this.gamePlay.getIndexSelectedCell();
-
-      let attackExecuted = false;
-      let moveExecuted = false;
-
       for (let i = 0; i < this.enemiesPositionedCharacters.length; i++) {
-        const enemy = this.enemiesPositionedCharacters[i];
-        const attackDistance = enemy.character.attackDistance;
-        const moveDistance = enemy.character.moveDistance;
-        const enemyPosition = enemy.position;
-        let distanceToPlayer = this.gamePlay.getVector(targetPosition, enemyPosition, this.gamePlay.boardSize);
-        if (attackDistance >= distanceToPlayer) {
+        const computer = this.enemiesPositionedCharacters[i];
+        const indexComp = this.enemiesPositionedCharacters.indexOf(computer);
+        const attackDistance = computer.character.attackDistance;
+        const moveDistance = computer.character.moveDistance;
+        const computerCharPosition = computer.position;
+        let newPosition;
+        let computerX = computerCharPosition % this.gamePlay.boardSize;
+        let computerY = Math.floor(computerCharPosition / this.gamePlay.boardSize);
+
+        let nearestTarget = null;
+        let nearestDistance = Infinity;
+
+        for (let j = 0; j < this.playerPositionedCharacters.length; j++) {
+          const playerCharacter = this.playerPositionedCharacters[j];
+          const distance = this.gamePlay.getVector(playerCharacter.position, computerCharPosition, this.gamePlay.boardSize);
+
+          if (distance < nearestDistance) {
+            nearestDistance = distance;
+            nearestTarget = playerCharacter;
+          }
+        }
+
+        if (!nearestTarget) {
+          continue; // Переходим к следующему компьютерному персонажу
+        }
+
+        const targetPosition = nearestTarget.position;
+        let playerX = targetPosition % this.gamePlay.boardSize;
+        let playerY = Math.floor(targetPosition / this.gamePlay.boardSize);
+        console.log(nearestTarget, computer, indexComp, nearestDistance )
+        if(nearestDistance <= attackDistance) {
           console.log('компьютер атакует');
-          const damage = Math.floor(Math.max(enemy.character.attack - this.playerPositionedCharacters[randomTarget].character.defence, enemy.character.attack * 0.1));
+          const damage = Math.floor(Math.max(computer.character.attack - nearestTarget.character.defence, computer.character.attack * 0.1));
           this.gamePlay.showDamage(targetPosition, damage).then(() => {
-            this.playerPositionedCharacters[randomTarget].character.health -= damage;
+            nearestTarget.character.health -= damage;
             this.gamePlay.redrawPositions(this.concatedCharacters);
-            if (this.playerPositionedCharacters[randomTarget].character.health <= 0) {
-              this.playerPositionedCharacters.splice(randomTarget, 1); // По индексу удаляем из списка персонажей
+            if (nearestTarget.character.health <= 0) {
+              const index = this.playerPositionedCharacters.findIndex((char) => char.position === targetPosition);
+              this.playerPositionedCharacters.splice(index, 1); // По индексу удаляем из списка персонажей
               const characterIndex = this.concatedCharacters.findIndex((char) => char.position === targetPosition); // Получаем индекс персонажа игрока в списке персонажей
               this.concatedCharacters.splice(characterIndex, 1); // По индексу удаляем из списка персонажей
               this.gamePlay.redrawPositions(this.concatedCharacters); // Перерисовываем поле без убитого персонажа игрока
@@ -262,19 +390,44 @@ export default class GameController { // основной контролирую
               }
             }
           });
-          attackExecuted = true;
           break; // Выходим из цикла после атаки
-        } else if (moveDistance < distanceToPlayer) {
-          // тут должен быть код для движения, НО ЕГО НЕТ (компьютер не может двигаться)
+        } else if ((moveDistance < nearestDistance && attackDistance < nearestDistance) || (nearestDistance > attackDistance && nearestDistance < moveDistance)) {
+          console.log('компьютер двигается')
+          let requariedMoveDistance = nearestDistance - attackDistance;
+          let sumProp = attackDistance + moveDistance;
+
+          if(nearestDistance > sumProp) {
+            newPosition = this.gamePlay.computerMoving(computerX, computerY, playerX, playerY, computerCharPosition, moveDistance);
+          } else {
+            newPosition = this.gamePlay.computerMoving(computerX, computerY, playerX, playerY, computerCharPosition, requariedMoveDistance);
+          }
+          
+          // Проверяем, что новая позиция находится в пределах игрового поля
+          if (newPosition >= 0 && newPosition < this.gamePlay.boardSize ** 2 && !this.concatedCharacters.some(char => char.position === newPosition)) {
+            computer.position = newPosition;
+            this.gamePlay.redrawPositions(this.concatedCharacters);
+          }
+          break;
+        } else if (nearestDistance === undefined) {
+          console.log('вектор undefined, выбирается случайное направление движения')
+          newPosition = this.gamePlay.getRandomMove(computerCharPosition, this.gamePlay.boardSize, moveDistance);
+          const positionCharacters = this.concatedCharacters.map(char => char.position);
+          // Проверяем, что новая позиция находится в пределах игрового поля
+          while (positionCharacters.includes(newPosition) || newPosition < 0 || newPosition >= this.gamePlay.boardSize ** 2) {
+            newPosition = this.gamePlay.getRandomMove(computerCharPosition, this.gamePlay.boardSize, moveDistance);
+          }
+          computer.position = newPosition;
+          this.gamePlay.redrawPositions(this.concatedCharacters);
+          break;
         }
       }
-      this.computerMoveDone = true; // Завершил ход компьютера
-      if(this.playerPositionedCharacters.length === 0) {
+      this.computerMoveDone = true;
+      if (this.playerPositionedCharacters.length === 0) {
         this.loseOrNextLevel();
       } else {
-        this.switchActivePlayer(); // После хода компьютера переключаем ход на игрока
+        this.switchActivePlayer();
       }
-    }, 2000); // Задержка перед ходом компьютера
+    }, 2000);
   }
 
   switchActivePlayer() { // Смена активного игрока
