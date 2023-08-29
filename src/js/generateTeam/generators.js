@@ -91,14 +91,24 @@ export const generatePlayerNewPositionedCharacters = (playerPositionedCharacters
   })
 }
 
-export const generateEnemyPositionedCharacters = () => { // Новая функция генерации позиции команды противника
+export const generateEnemyPositionedCharacters = (currentTheme, themes) => { // Новая функция генерации позиции команды противника
   const enemysTypes = [
     Daemon,
     Undead,
     Vampire,
   ];  
 
-  const enemyTeam = generateTeam(enemysTypes, 1, 4);
+  let enemyTeam;
+
+  if (currentTheme === themes.prairie) { // Условия для смены карты
+    enemyTeam = generateTeam(enemysTypes, 1, 2);
+  } else if(currentTheme === themes.desert) {
+    enemyTeam = generateTeam(enemysTypes, 1, 3);
+  } else if (currentTheme === themes.arctic) {
+    enemyTeam = generateTeam(enemysTypes, 1, 4);
+  } else if(currentTheme === themes.mountain) {
+    enemyTeam = generateTeam(enemysTypes, 1, 5);
+  }
 
   const enemyCharacters = enemyTeam.characters;
 
@@ -117,3 +127,19 @@ export const generateEnemyPositionedCharacters = () => { // Новая функ�
 
   return enemiesPositionedCharacters;
 };
+
+export function whatAreChar(data) {
+  if(data.character.type === 'bowman') {
+    return new PositionedCharacter(new Bowman(), data.position);
+  } else if(data.character.type === 'swordsman') {
+    return new PositionedCharacter(new Swordsman(), data.position);
+  } else if(data.character.type === 'magician') {
+    return new PositionedCharacter(new Magician(), data.position);
+  } else if(data.character.type === 'daemon') {
+    return new PositionedCharacter(new Daemon(), data.position);
+  } else if(data.character.type === 'undead') {
+    return new PositionedCharacter(new Undead(), data.position);
+  } else if(data.character.type === 'vampire') {
+    return new PositionedCharacter(new Vampire(), data.position);
+  }
+}

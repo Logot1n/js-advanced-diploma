@@ -63,6 +63,25 @@ export default class GamePlay { // Класс отвечает за создан
     this.cells = Array.from(this.boardEl.children);
   }
 
+  resetEvents() {
+    this.newGameEl.removeEventListener('click', (event) => this.onNewGameClick(event));
+    this.saveGameEl.removeEventListener('click', (event) => this.onSaveGameClick(event));
+    this.loadGameEl.removeEventListener('click', (event) => this.onLoadGameClick(event));
+    for (let i = 0; i < this.boardSize ** 2; i += 1) {
+      const cellEl = document.querySelector('.cell');
+      cellEl.removeEventListener('mouseenter', (event) => this.onCellEnter(event));
+      cellEl.removeEventListener('mouseleave', (event) => this.onCellLeave(event));
+      cellEl.removeEventListener('click', (event) => this.onCellClick(event));
+    }
+
+    this.cellClickListeners = [];
+    this.cellEnterListeners = [];
+    this.cellLeaveListeners = [];
+    this.newGameListeners = [];
+    this.saveGameListeners = [];
+    this.loadGameListeners = [];
+  }
+
   /**
    * Draws positions (with chars) on boardEl
    *
@@ -268,27 +287,39 @@ export default class GamePlay { // Класс отвечает за создан
     return result;
   }
   
-  getRandomMove(currentPosition, boardSize, moveDistance) {
-    const randomDirection = Math.floor(Math.random() * 8);
+  getRandomMove(currentPosition, boardSize, moveDistance) { // Генерация перемещения компьютера, если цель не была найдена.
+    const randomDirection = Math.floor(Math.random() * 4);
     const randomMove = Math.floor(Math.random() * moveDistance) + 1;
   
     let newPosition;
   
     switch (randomDirection) {
-      case 0: newPosition = currentPosition - randomMove; break; // Влево
-      case 1: newPosition = currentPosition + randomMove; break; // Вправо
-      case 2: newPosition = currentPosition - boardSize * randomMove; break; // Вверх
-      case 3: newPosition = currentPosition + boardSize * randomMove; break; // Вниз
-      case 4: newPosition = currentPosition - boardSize * randomMove - randomMove; break; // Влево и вверх
-      case 5: newPosition = currentPosition - boardSize * randomMove + randomMove; break; // Вправо и вверх
-      case 6: newPosition = currentPosition + boardSize * randomMove - randomMove; break; // Влево и вниз
-      default: newPosition = currentPosition + boardSize * randomMove + randomMove; break; // Вправо и вниз
+      case 0: // Влево
+        newPosition = (currentPosition % boardSize) - randomMove >= 0
+            ? currentPosition - randomMove
+            : currentPosition;
+        break;
+      case 1: // Вправо
+        newPosition = (currentPosition % boardSize) + randomMove < boardSize
+            ? currentPosition + randomMove
+            : currentPosition;
+        break;
+      case 2: // Вверх
+        newPosition = Math.floor(currentPosition / boardSize) - randomMove >= 0
+            ? currentPosition - boardSize * randomMove
+            : currentPosition;
+        break;
+      default: // Вниз
+        newPosition = Math.floor(currentPosition / boardSize) + randomMove < boardSize
+            ? currentPosition + boardSize * randomMove
+            : currentPosition;
+        break;
     }
   
     return newPosition;
   }
 
-  computerMoving(computerX, computerY, playerX, playerY, computerCharPosition, move) {
+  computerMoving(computerX, computerY, playerX, playerY, computerCharPosition, move) { // Перемещение компьютера
     let newPosition;
     if(computerY === playerY) { // движение по горизонтали
       if(computerX > playerX) {
@@ -296,28 +327,23 @@ export default class GamePlay { // Класс отвечает за создан
       } else {
         newPosition = computerCharPosition + move;
       }
-      console.log('на одном Y')
-    } else if(computerX === playerX) {
+    } else if(computerX === playerX) { // движение по вертикали
       if(computerY > playerY) {
         newPosition = computerCharPosition - this.boardSize * move;
       } else {
         newPosition = computerCharPosition + this.boardSize * move;
       }
-      console.log('на одном X')
-    } else if(computerX > playerX && computerY > playerY) {
-      console.log('1');
+    } else if(computerX > playerX && computerY > playerY) { // Влево и вверх
       newPosition = computerCharPosition - this.boardSize * move - move;
-    } else if(computerX < playerX && computerY < playerY) {
+    } else if(computerX < playerX && computerY < playerY) { // Вправо и вниз
       newPosition = computerCharPosition + this.boardSize * move + move;
-      console.log('2');
-    } else if(computerX < playerX && computerY > playerY) {
-      newPosition = computerCharPosition + this.boardSize * move - move;
-      console.log('3');
-    } else if(computerX > playerX && computerY < playerY) {
+    } else if(computerX < playerX && computerY > playerY) { // Вправо и вверх
       newPosition = computerCharPosition - this.boardSize * move + move;
-      console.log('4');
+    } else if(computerX > playerX && computerY < playerY) { // Влево и вниз
+      newPosition = computerCharPosition + this.boardSize * move - move;
     }
-
+    console.log(`старая позиция ${computerCharPosition}`)
+    console.log(`новая позиция ${newPosition}`)
     return newPosition;
   }
 
@@ -336,11 +362,11 @@ export default class GamePlay { // Класс отвечает за создан
     }
   }
 
-  reloadStats(playerPositionedCharacters) {
+  reloadStats(playerPositionedCharacters) { // Обновление характеристик персонажей игрока
     playerPositionedCharacters.forEach(char => {
       char.character.level++;
 
-      let healthAfter = char.character.health + 30;
+      let healthAfter = char.character.health + 40;
       char.character.health = healthAfter;
       if(healthAfter > 100) {
         char.character.health = 100;
@@ -354,7 +380,7 @@ export default class GamePlay { // Класс отвечает за создан
     })
   }
 
-  computerReloadStats(enemiesPositionedCharacters, currentTheme, themes) {
+  computerReloadStats(enemiesPositionedCharacters, currentTheme, themes) { // Обновление характеристик персонажей компьютера
     enemiesPositionedCharacters.forEach(char => {
       if(currentTheme === themes.desert) {
         char.character.level = 2;
@@ -364,7 +390,7 @@ export default class GamePlay { // Класс отвечает за создан
         char.character.level = 4;
       }
 
-      let healthAfter = char.character.health + 30;
+      let healthAfter = char.character.health + 20;
       char.character.health = healthAfter;
       if(healthAfter > 100) {
         char.character.health = 100;
