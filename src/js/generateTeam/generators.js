@@ -129,17 +129,28 @@ export const generateEnemyPositionedCharacters = (currentTheme, themes) => { // 
 };
 
 export function whatAreChar(data) {
+  let character;
+
   if(data.character.type === 'bowman') {
-    return new PositionedCharacter(new Bowman(), data.position);
+    character = new Bowman(data.character.level)
   } else if(data.character.type === 'swordsman') {
-    return new PositionedCharacter(new Swordsman(), data.position);
+    character = new Swordsman(data.character.level)
   } else if(data.character.type === 'magician') {
-    return new PositionedCharacter(new Magician(), data.position);
+    character = new Magician(data.character.level)
   } else if(data.character.type === 'daemon') {
-    return new PositionedCharacter(new Daemon(), data.position);
+    character = new Daemon(data.character.level)
   } else if(data.character.type === 'undead') {
-    return new PositionedCharacter(new Undead(), data.position);
+    character = new Undead(data.character.level)
   } else if(data.character.type === 'vampire') {
-    return new PositionedCharacter(new Vampire(), data.position);
+    character = new Vampire(data.character.level)
   }
+
+  character.attack = data.character.attack;
+  character.defence = data.character.defence;
+  character.health = data.character.health;
+  character.type = data.character.type;
+  character.attackDistance = data.character.attackDistance;
+  character.moveDistance = data.character.moveDistance;
+
+  return new PositionedCharacter(character, data.position);
 }

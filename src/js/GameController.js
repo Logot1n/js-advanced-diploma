@@ -85,6 +85,10 @@ export default class GameController { // основной контролирую
         isGameFieldLocked
       } = loadedState;
 
+      this.playerPositionedCharacters = [];
+      this.enemiesPositionedCharacters = [];
+      this.concatedCharacters = [];
+
       this.currentTheme = currentTheme;
       this.playerPositionedCharacters = playerPositionedCharacters.map(data => whatAreChar(data));
       this.enemiesPositionedCharacters = enemiesPositionedCharacters.map(data => whatAreChar(data));
@@ -92,8 +96,7 @@ export default class GameController { // основной контролирую
       this.activePlayer = activePlayer;
       this.computerMoveDone = computerMoveDone;
       this.isGameFieldLocked = isGameFieldLocked;
-    }
-
+    } 
       this.gamePlay.resetEvents();
       this.gamePlay.drawUi(this.currentTheme); // Перерисовываем интерфейс с темой
       this.gamePlay.redrawPositions(this.concatedCharacters); // Перерисовываем позиции персонажей
@@ -105,7 +108,6 @@ export default class GameController { // основной контролирую
   }
 
   onCellEnter = (index) => { // Событие вызывается при наведении на ячейку поля
-    console.log('onCellEnter event triggered');
     const cellEl = this.gamePlay.cells[index];
     this.currentCell = this.gamePlay.cells.indexOf(cellEl); // Получаем индекс текущей ячейки
     const selectedCell = this.gamePlay.getIndexSelectedCell();
@@ -160,7 +162,6 @@ export default class GameController { // основной контролирую
   }
 
   onCellClick = (index) => { // Событие при клике на ячейку поля
-    console.log('onCellClick event triggered');
     if(this.isGameFieldLocked) {
       return;
     }
@@ -168,6 +169,7 @@ export default class GameController { // основной контролирую
     this.currentCell = this.gamePlay.cells.indexOf(cellEl); // Получаем индекс текущей ячейки
     const selectedCell = this.gamePlay.getIndexSelectedCell();
     let selectedCharacter = this.playerPositionedCharacters.find((char) => char.position === selectedCell);
+    const selectedCharacterIndex = this.playerPositionedCharacters.findIndex(char => char.position === selectedCell);
 
     const { character, characterPlayer, characterEnemy } = this.getCharByCell(this.currentCell); // Получаем данные персонажа по позиции
 
@@ -197,7 +199,9 @@ export default class GameController { // основной контролирую
       let vector = this.gamePlay.getVector(this.currentCell, selectedCell, this.gamePlay.boardSize);
       if(moveDistance >= vector) {
         selectedCharacter.position = this.currentCell;
+        this.playerPositionedCharacters[selectedCharacterIndex].position = this.currentCell;
         this.gamePlay.redrawPositions(this.concatedCharacters);
+        console.log(this.concatedCharacters)
         this.gamePlay.deselectCell(selectedCell);
         this.gamePlay.selectCell(this.currentCell, 'yellow');
       }
@@ -243,6 +247,7 @@ export default class GameController { // основной контролирую
         const attackDistance = computer.character.attackDistance;
         const moveDistance = computer.character.moveDistance;
         const computerCharPosition = computer.position;
+        let computerIndex = this.enemiesPositionedCharacters.findIndex(char => char.position === computerCharPosition);
         let newPosition;
         let computerX = computerCharPosition % this.gamePlay.boardSize;
         let computerY = Math.floor(computerCharPosition / this.gamePlay.boardSize);
@@ -268,7 +273,6 @@ export default class GameController { // основной контролирую
 
         let playerX = targetPosition % this.gamePlay.boardSize;
         let playerY = Math.floor(targetPosition / this.gamePlay.boardSize);
-        console.log(nearestTarget, nearestDistance, computer)
         if(nearestDistance <= attackDistance) {
           console.log('компьютер атакует, цель найдена');
           const damage = Math.floor(Math.max(computer.character.attack - nearestTarget.character.defence, computer.character.attack * 0.1));
@@ -302,6 +306,7 @@ export default class GameController { // основной контролирую
             // Проверяем, что новая позиция находится в пределах игрового поля
             if (newPosition >= 0 && newPosition < this.gamePlay.boardSize ** 2 && !this.concatedCharacters.some(char => char.position === newPosition)) {
               computer.position = newPosition;
+              this.enemiesPositionedCharacters[computerIndex].position = newPosition;
               this.gamePlay.redrawPositions(this.concatedCharacters);
             }
             break;
@@ -317,6 +322,7 @@ export default class GameController { // основной контролирую
             while (positionCharacters.includes(newPosition) || newPosition < 0 || newPosition >= this.gamePlay.boardSize ** 2) {
               newPosition = this.gamePlay.getRandomMove(randomComputerPosition, this.gamePlay.boardSize, moveDistance);
             }
+            this.enemiesPositionedCharacters[computerIndex].position = newPosition;
             randomComputer.position = newPosition;
             this.gamePlay.redrawPositions(this.concatedCharacters);
             break;
