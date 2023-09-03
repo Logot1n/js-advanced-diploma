@@ -63,6 +63,10 @@ export default class GamePlay { // Класс отвечает за создан
     this.cells = Array.from(this.boardEl.children);
   }
 
+  deleteBoard() {
+    this.container.innerHTML = '';
+  }
+
   resetEvents() {
     this.newGameEl.removeEventListener('click', (event) => this.onNewGameClick(event));
     this.saveGameEl.removeEventListener('click', (event) => this.onSaveGameClick(event));
@@ -196,11 +200,11 @@ export default class GamePlay { // Класс отвечает за создан
     this.loadGameListeners.forEach((o) => o.call(null));
   }
 
-  static showError(message) {
-    alert(message);
+  showError(message) {
+    throw new Error(message);
   }
 
-  static showMessage(message) {
+  showMessage(message) {
     alert(message);
   }
 
@@ -286,64 +290,62 @@ export default class GamePlay { // Класс отвечает за создан
 
     return result;
   }
-  
+
   getRandomMove(currentPosition, boardSize, moveDistance) { // Генерация перемещения компьютера, если цель не была найдена.
     const randomDirection = Math.floor(Math.random() * 4);
     const randomMove = Math.floor(Math.random() * moveDistance) + 1;
-  
+
     let newPosition;
-  
+
     switch (randomDirection) {
       case 0: // Влево
         newPosition = (currentPosition % boardSize) - randomMove >= 0
-            ? currentPosition - randomMove
-            : currentPosition;
+          ? currentPosition - randomMove
+          : currentPosition;
         break;
       case 1: // Вправо
         newPosition = (currentPosition % boardSize) + randomMove < boardSize
-            ? currentPosition + randomMove
-            : currentPosition;
+          ? currentPosition + randomMove
+          : currentPosition;
         break;
       case 2: // Вверх
         newPosition = Math.floor(currentPosition / boardSize) - randomMove >= 0
-            ? currentPosition - boardSize * randomMove
-            : currentPosition;
+          ? currentPosition - boardSize * randomMove
+          : currentPosition;
         break;
       default: // Вниз
         newPosition = Math.floor(currentPosition / boardSize) + randomMove < boardSize
-            ? currentPosition + boardSize * randomMove
-            : currentPosition;
+          ? currentPosition + boardSize * randomMove
+          : currentPosition;
         break;
     }
-  
+
     return newPosition;
   }
 
   computerMoving(computerX, computerY, playerX, playerY, computerCharPosition, move) { // Перемещение компьютера
     let newPosition;
-    if(computerY === playerY) { // движение по горизонтали
-      if(computerX > playerX) {
+    if (computerY === playerY) { // движение по горизонтали
+      if (computerX > playerX) {
         newPosition = computerCharPosition - move;
       } else {
         newPosition = computerCharPosition + move;
       }
-    } else if(computerX === playerX) { // движение по вертикали
-      if(computerY > playerY) {
+    } else if (computerX === playerX) { // движение по вертикали
+      if (computerY > playerY) {
         newPosition = computerCharPosition - this.boardSize * move;
       } else {
         newPosition = computerCharPosition + this.boardSize * move;
       }
-    } else if(computerX > playerX && computerY > playerY) { // Влево и вверх
+    } else if (computerX > playerX && computerY > playerY) { // Влево и вверх
       newPosition = computerCharPosition - this.boardSize * move - move;
-    } else if(computerX < playerX && computerY < playerY) { // Вправо и вниз
+    } else if (computerX < playerX && computerY < playerY) { // Вправо и вниз
       newPosition = computerCharPosition + this.boardSize * move + move;
-    } else if(computerX < playerX && computerY > playerY) { // Вправо и вверх
+    } else if (computerX < playerX && computerY > playerY) { // Вправо и вверх
       newPosition = computerCharPosition - this.boardSize * move + move;
-    } else if(computerX > playerX && computerY < playerY) { // Влево и вниз
+    } else if (computerX > playerX && computerY < playerY) { // Влево и вниз
       newPosition = computerCharPosition + this.boardSize * move - move;
     }
-    console.log(`старая позиция ${computerCharPosition}`)
-    console.log(`новая позиция ${newPosition}`)
     return newPosition;
   }
 
@@ -363,44 +365,44 @@ export default class GamePlay { // Класс отвечает за создан
   }
 
   reloadStats(playerPositionedCharacters) { // Обновление характеристик персонажей игрока
-    playerPositionedCharacters.forEach(char => {
+    playerPositionedCharacters.forEach((char) => {
       char.character.level++;
 
-      let healthAfter = char.character.health + 40;
+      const healthAfter = char.character.health + 40;
       char.character.health = healthAfter;
-      if(healthAfter > 100) {
+      if (healthAfter > 100) {
         char.character.health = 100;
       }
 
-      let defenceAfter = Math.max(char.character.defence, char.character.defence * (80 + char.character.health) / 100);
+      const defenceAfter = Math.max(char.character.defence, char.character.defence * (80 + char.character.health) / 100);
       char.character.defence = Math.ceil(defenceAfter);
 
-      let attackAfter = Math.max(char.character.attack, char.character.attack * (80 + char.character.health) / 100);
+      const attackAfter = Math.max(char.character.attack, char.character.attack * (80 + char.character.health) / 100);
       char.character.attack = Math.ceil(attackAfter);
-    })
+    });
   }
 
   computerReloadStats(enemiesPositionedCharacters, currentTheme, themes) { // Обновление характеристик персонажей компьютера
-    enemiesPositionedCharacters.forEach(char => {
-      if(currentTheme === themes.desert) {
+    enemiesPositionedCharacters.forEach((char) => {
+      if (currentTheme === themes.desert) {
         char.character.level = 2;
-      } else if(currentTheme === themes.arctic) {
+      } else if (currentTheme === themes.arctic) {
         char.character.level = 3;
-      } else if(currentTheme === themes.mountain) {
+      } else if (currentTheme === themes.mountain) {
         char.character.level = 4;
       }
 
-      let healthAfter = char.character.health + 20;
+      const healthAfter = char.character.health + 20;
       char.character.health = healthAfter;
-      if(healthAfter > 100) {
+      if (healthAfter > 100) {
         char.character.health = 100;
       }
 
-      let defenceAfter = Math.max(char.character.defence, char.character.defence * (80 + char.character.health) / 100);
+      const defenceAfter = Math.max(char.character.defence, char.character.defence * (80 + char.character.health) / 100);
       char.character.defence = Math.ceil(defenceAfter);
 
-      let attackAfter = Math.max(char.character.attack, char.character.attack * (80 + char.character.health) / 100);
+      const attackAfter = Math.max(char.character.attack, char.character.attack * (80 + char.character.health) / 100);
       char.character.attack = Math.ceil(attackAfter);
-    })
+    });
   }
 }

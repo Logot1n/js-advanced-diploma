@@ -20,9 +20,9 @@ import Vampire from './characters/Vampire';
 export function* characterGenerator(playerTypes, maxLevel) {
   while (true) {
     const randomIndex = Math.floor(Math.random() * playerTypes.length);
-    const randomType = playerTypes[randomIndex];
+    const RandomType = playerTypes[randomIndex];
     const level = Math.ceil(Math.random() * maxLevel);
-    yield new randomType(level);
+    yield new RandomType(level);
   }
 }
 
@@ -83,30 +83,30 @@ export const generatePlayerNewPositionedCharacters = (playerPositionedCharacters
     playerPositions.push(position);
   }
 
-  playerPositionedCharacters.forEach(char => {
-    let randomIndex = Math.floor(Math.random() * playerPositions.length);
-    let newPosition = playerPositions[randomIndex];
+  playerPositionedCharacters.forEach((char) => {
+    const randomIndex = Math.floor(Math.random() * playerPositions.length);
+    const newPosition = playerPositions[randomIndex];
     char.position = newPosition;
     playerPositions.splice(randomIndex, 1);
-  })
-}
+  });
+};
 
 export const generateEnemyPositionedCharacters = (currentTheme, themes) => { // Новая функция генерации позиции команды противника
   const enemysTypes = [
     Daemon,
     Undead,
     Vampire,
-  ];  
+  ];
 
   let enemyTeam;
 
   if (currentTheme === themes.prairie) { // Условия для смены карты
     enemyTeam = generateTeam(enemysTypes, 1, 2);
-  } else if(currentTheme === themes.desert) {
+  } else if (currentTheme === themes.desert) {
     enemyTeam = generateTeam(enemysTypes, 1, 3);
   } else if (currentTheme === themes.arctic) {
     enemyTeam = generateTeam(enemysTypes, 1, 4);
-  } else if(currentTheme === themes.mountain) {
+  } else if (currentTheme === themes.mountain) {
     enemyTeam = generateTeam(enemysTypes, 1, 5);
   }
 
@@ -131,18 +131,18 @@ export const generateEnemyPositionedCharacters = (currentTheme, themes) => { // 
 export function whatAreChar(data) {
   let character;
 
-  if(data.character.type === 'bowman') {
-    character = new Bowman(data.character.level)
-  } else if(data.character.type === 'swordsman') {
-    character = new Swordsman(data.character.level)
-  } else if(data.character.type === 'magician') {
-    character = new Magician(data.character.level)
-  } else if(data.character.type === 'daemon') {
-    character = new Daemon(data.character.level)
-  } else if(data.character.type === 'undead') {
-    character = new Undead(data.character.level)
-  } else if(data.character.type === 'vampire') {
-    character = new Vampire(data.character.level)
+  if (data.character.type === 'bowman') {
+    character = new Bowman(data.character.level);
+  } else if (data.character.type === 'swordsman') {
+    character = new Swordsman(data.character.level);
+  } else if (data.character.type === 'magician') {
+    character = new Magician(data.character.level);
+  } else if (data.character.type === 'daemon') {
+    character = new Daemon(data.character.level);
+  } else if (data.character.type === 'undead') {
+    character = new Undead(data.character.level);
+  } else if (data.character.type === 'vampire') {
+    character = new Vampire(data.character.level);
   }
 
   character.attack = data.character.attack;

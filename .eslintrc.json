@@ -6,20 +6,28 @@
      "jest": true
   },
   "rules": {
-    "class-methods-use-this": "off",
+    "class-methods-use-this": "off", // отключаем проверку методов
     "no-restricted-syntax": [
       "error",
       "LabeledStatement",
       "WithStatement"
     ],
-    "max-classes-per-file": ["error", 10],
-    "no-underscore-dangle": ["error", { "allowAfterThis": true }],
-    "no-plusplus": ["error", { "allowForLoopAfterthoughts": true }],
-    "no-alert": "off",
-    "max-len": ["error", { "code": 200 }],
-    "no-param-reassign": "off",
-    "no-else-return": "off",
-    "no-lonely-if": "off"
+    "max-classes-per-file": ["error", 10], // ограничиваем кол-во классов в одном файле
+    "no-underscore-dangle": ["error", { "allowAfterThis": true }], // разрешаем использовать _ после this => this._computer итд
+    "no-plusplus": "off", // отключаем ++
+    "no-unused-vars": "off", // отключаем предупреждение о неиспользованных переменных
+    "no-mixed-operators": "off", // отключаем проверку операторов * и /
+    "no-alert": "off", // отключаем предупреждение о использовании alert
+    "max-len": ["error", { "code": 200 }], // ограничиваем длину строки
+    "no-param-reassign": "off", // отключаем переопределение параметров
+    "no-lonely-if": "off", // отключаем проверку if
+    "no-else-return": "off", // отключаем проверку else
+    "no-shadow": "off", // отключаем проверку переменных
+    "import/no-extraneous-dependencies": ["error", {"devDependencies": true }], // отключаем проверку dev-зависимостей
+    "no-continue": "off", // отключаем проверку continue
+    "arrow-parens": "off",
+    "no-empty": "off",
+    "no-console": "off"
   },
   "parserOptions": {
     "ecmaVersion": 2018,
